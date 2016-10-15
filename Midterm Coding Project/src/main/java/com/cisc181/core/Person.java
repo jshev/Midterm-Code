@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.cisc181.exceptions.PersonException;
+
 /*
  * comment
  */
@@ -110,7 +112,7 @@ public abstract class Person implements java.io.Serializable {
 		System.out.println(this.DOB);
 	}
 
-	public int PrintAge() {
+	public int PrintAge() throws PersonException {
 		Calendar today = Calendar.getInstance();
 		Calendar birthDate = Calendar.getInstance();
 
@@ -120,6 +122,10 @@ public abstract class Person implements java.io.Serializable {
 			throw new IllegalArgumentException("Can't be born in the future");
 		}
 		age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+		// throws exception if person is more than 100 years old
+		if (age > 100) {
+			throw new PersonException("Can't be more than 100 years old");
+		}
 
 		// If birth date is greater than todays date (after 2 days adjustment of
 		// leap year) then decrement age one year
@@ -140,5 +146,19 @@ public abstract class Person implements java.io.Serializable {
 
 		return age;
 
+	}
+	
+	public String PrintEmail() throws PersonException {
+		// throws exception if phone number is not in the correct format
+		String regex = "^\\(([0-9]{3})\\)[-]([0-9]{3})[-]([0-9]{4})$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(phone_number);
+		if (matcher.matches()) {
+			System.out.println("phone number is " + phone_number);
+			return phone_number;
+		}
+		else {
+			throw new PersonException("Phone number is not in the correct format.");
+		}
 	}
 }
